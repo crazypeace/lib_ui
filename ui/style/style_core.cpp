@@ -231,7 +231,6 @@ void EnsureContrast(ColorData &over, const ColorData &under) {
 }
 
 } // namespace internal
-} // namespace style
 
 // Forkgram-specific: Square userpics feature
 namespace {
@@ -244,7 +243,9 @@ void SetSquareUserpics(bool enabled) {
 	SquareUserpicsEnabled = enabled;
 }
 
-bool SquareUserpics() {
+[[nodiscard]] bool SquareUserpics() {
 	return SquareUserpicsEnabled;
 }
+
+} // namespace style
 
