@@ -91,4 +91,8 @@ inline QImage createInvertedCircleMask(int size) {
 	return internal::createCircleMask(size, QColor(255, 255, 255), QColor(0, 0, 0));
 }
 
+// Forkgram-specific: Square userpics feature
+void SetSquareUserpics(bool enabled);
+[[nodiscard]] bool SquareUserpics();
+
 } // namespace style
