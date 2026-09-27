@@ -589,8 +589,9 @@ bool WindowHelper::filterNativeEvent(
 			MONITORINFO mi;
 			mi.cbSize = sizeof(mi);
 			UINT uEdge = (UINT)-1;
-			if (GetMonitorInfo(hMonitor, &mi)
-				&& IsTaskbarAutoHidden(&mi.rcMonitor, &uEdge)) {
+			const auto autohide = GetMonitorInfo(hMonitor, &mi)
+				&& IsTaskbarAutoHidden(&mi.rcMonitor, &uEdge);
+			if (autohide) {
 				switch (uEdge) {
 				case ABE_LEFT: r->left += 1; break;
 				case ABE_RIGHT: r->right -= 1; break;
@@ -598,6 +599,14 @@ bool WindowHelper::filterNativeEvent(
 				case ABE_BOTTOM: r->bottom -= 1; break;
 				}
 			}
+			LOG(("DBG ncc: max=1 autohide=%1 edge=%2 r=(%3,%4,%5,%6) monitor=(%7,%8,%9,%10) work=(%11,%12,%13,%14)")
+				.arg(autohide ? 1 : 0)
+				.arg(uEdge)
+				.arg(r->left).arg(r->top).arg(r->right).arg(r->bottom)
+				.arg(mi.rcMonitor.left).arg(mi.rcMonitor.top)
+				.arg(mi.rcMonitor.right).arg(mi.rcMonitor.bottom)
+				.arg(mi.rcWork.left).arg(mi.rcWork.top)
+				.arg(mi.rcWork.right).arg(mi.rcWork.bottom));
 		}
 		if (result) *result = addBorders ? 0 : WVR_REDRAW;
 	} return true;
@@ -977,6 +986,14 @@ void WindowHelper::updateMargins() {
 			margins.setBottom(margins.bottom() - _marginsDelta.bottom());
 			margins.setTop(margins.top() - _marginsDelta.top());
 		}
+		LOG(("DBG margins: max=1 nativeResize=%1 delta=(%2,%3,%4,%5) margins=(%6,%7,%8,%9) win=(%10,%11,%12,%13) work=(%14,%15,%16,%17)")
+			.arg(nativeResize() ? 1 : 0)
+			.arg(_marginsDelta.left()).arg(_marginsDelta.top())
+			.arg(_marginsDelta.right()).arg(_marginsDelta.bottom())
+			.arg(margins.left()).arg(margins.top())
+			.arg(margins.right()).arg(margins.bottom())
+			.arg(w.left).arg(w.top).arg(w.right).arg(w.bottom)
+			.arg(m.left).arg(m.top).arg(m.right).arg(m.bottom));
 	} else if (!_marginsDelta.isNull()) {
 		if (!nativeResize()) {
 			RECT w;
