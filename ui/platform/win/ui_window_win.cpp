@@ -388,6 +388,7 @@ void WindowHelper::init() {
 
 	window()->winIdValue() | rpl::on_next([=](WId winId) {
 		_handle = reinterpret_cast<HWND>(winId);
+		_appliedMargins.reset();
 
 		if (_handle) {
 			_dpi = GetDpiForWindowSupported()
@@ -1018,6 +1019,13 @@ void WindowHelper::updateMargins() {
 		margins = QMargins();
 		_marginsDelta = QMargins();
 	}
+	// Qt recomputes the client area on every setCustomMargins() and answers
+	// with WM_NCCALCSIZE, which lands back here through WM_SIZE. With unchanged
+	// margins that is a self-sustaining loop, so only push real changes.
+	if (_appliedMargins && *_appliedMargins == margins) {
+		return;
+	}
+	_appliedMargins = margins;
 	SetCustomMargins(window()->windowHandle(), margins);
 }
 

@@ -86,6 +86,7 @@ private:
 	std::optional<WindowShadow> _shadow;
 	rpl::variable<uint> _dpi;
 	QMargins _marginsDelta;
+	std::optional<QMargins> _appliedMargins;
 	HWND _handle = nullptr;
 	bool _updatingMargins = false;
 	bool _isFullScreen = false;
